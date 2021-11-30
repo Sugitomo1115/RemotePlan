@@ -7,4 +7,22 @@
     </head>
     <body>
         <h1>企画詳細画面</h1>
+        <a href="{% url 'top' %}">Top</a>
+        <div>
+            <h3>企画名：{{ plan.name }}</h3>
+            <small>[{{plan.posted_at}}]</small>
+            <p>対象：{{plan.target}}</p>
+            <p>人数：{{plan.person}}</p>
+            <div>
+                概要：{{plan.outline}}
+            </div>
+        </div>
+        <a href="{% url 'like' plan.id %}">
+            イイねの数：{{plan.like}}
+        </a>
+        <br>
+        <a href="{% url 'delete' plan.id %}">
+            Delete
+        </a>
     </body>
+</html>

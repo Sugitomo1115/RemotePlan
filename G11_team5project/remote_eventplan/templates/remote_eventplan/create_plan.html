@@ -6,5 +6,31 @@
         <title>企画作成ページ</title>
     </head>
     <body>
-        <h1>企画作成画面</h1>
+      <a href="{% url 'top' %}">Top</a>
+      <h1>企画作成画面</h1>
+      <form action = "{% url 'top' %}" method="post">
+          {% csrf_token %}
+          <p>企画名</p>
+          <input type="text" name="name">
+          <p>対象</p>
+          <select name="target">
+              <option value="誰でも">誰でも</option>
+              <option value="学生">学生</option>
+              <option value="社会人">社会人</option>
+          </select>
+          <p>人数</p>
+          <input type="text" name="person">
+          <p>所要時間</p>
+          <input type="text" name="time">
+          <p>使用ツール</p>
+          <input type="text" name="tools">
+          <p>ヘルプ</p>
+          <input type="text" name="help">
+          <p>タグ</p>
+          <input type="text" name="tag">
+          <p>詳細</p>
+          <input type="text" name="outline">
+          <button type="submit">作成</button>
+      </form>
     </body>
+</html>

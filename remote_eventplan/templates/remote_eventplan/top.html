@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <title>トップページ</title>
+        <script type="text/javascript" src="{% static 'js/remote_plan.js' %}"></script>
+    </head>
+    <body>
+      <h1>トップ画面</h1>
+      <form action="{% url 'top' %}" method="get">
+        <input name="query" value="{{ request.GET.query }}" type="text">
+        <button type="submit">検索する</button>
+        <input name="select" type="radio" value="">なし
+        <input name="select" type="radio" value="誰でも">誰でも
+        <input name="select" type="radio" value="学生">学生
+        <input name="select" type="radio" value="社会人">社会人
+        <button type="submit">絞り込む</button>
+      </form>
+      <a href="{% url 'create' %}">作成</a>
+    <br>
+      {% if plans %}
+      {% for plan in plans %}
+      <div>
+        <div>
+            企画名：
+          <a href="{% url 'detail' plan.id %}">{{ plan.name }}</a>
+          <div>
+            <a onclick="like({{plan.id}});">
+              イイねの数：<span id="like{{plan.id}}">{{plan.like}}</span>
+            </a>
+          </div>
+        </div>
+        <div>
+            概要：
+          {{ plan.outline | linebreaksbr }}
+        </div>
+      </div>
+      {% endfor %}
+      {% else %}
+      <p>No plan.</p>
+      {% endif %}
+    </body>
+</html>

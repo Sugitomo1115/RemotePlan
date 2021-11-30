@@ -22,18 +22,14 @@ def top(request):
             search = q_word.replace("　"," ")
             search_list = search.split(" ")
 
-            #(3)クエリを作る
             query = Q()
             for word in search_list:
 
-                #空欄の場合は次のループへ
                 if word == "":
                     continue
 
-                #TIPS:AND検索の場合は&を、OR検索の場合は|を使用する。
                 query &= Q(Q(name__icontains=word) | Q(outline__icontains=word))
 
-            #(4)作ったクエリを実行
             plans = Plan.objects.filter(query)
         plans = plans.order_by('-posted_at')
     

@@ -22,7 +22,7 @@ default:
   before_script:
     - apt -y update
     - apt -y install apt-utils
-    - apt -y install net-tools python3.8 python3-pip mysql-client libmysqlclient-dev
+    - apt -y install net-tools python2.7.17 python-pip mysql-client libmysqlclient-dev
     - apt -y upgrade
     - pip3 install -r requirements.txt
 
@@ -42,4 +42,17 @@ django-tests:
     # The MYSQL user only gets permissions for MYSQL_DB, so Django can't create a test database.
     - echo "GRANT ALL on *.* to '${MYSQL_USER}';"| mysql -u root --password="${MYSQL_ROOT_PASSWORD}" -h mysql
     # use python3 explicitly. see https://wiki.ubuntu.com/Python/3
-    - python3 manage.py test
+    - python manage.py test
+
+stages:
+  - deploy
+
+staging:
+  stage: deploy
+  script:
+  - apt-get update -qy
+  - apt-get install -y ruby-dev
+  - gem install dpl
+  - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
+  only:
+  - master

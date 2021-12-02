@@ -1,44 +1,22 @@
-variables:
-  # DJANGO_CONFIG: "test"
-  MYSQL_DATABASE: $MYSQL_DB
-  MYSQL_ROOT_PASSWORD: $MYSQL_PASS
-  MYSQL_USER: $MYSQL_USER
-  MYSQL_PASSWORD: $MYSQL_PASS
+stages:
+  - test
+  - deploy
 
-default:
-  image: ubuntu:20.04
-  #
-  # Pick zero or more services to be used on all builds.
-  # Only needed when using a docker container to run your tests in.
-  # Check out: http://docs.gitlab.com/ee/ci/docker/using_docker_images.html#what-is-a-service
-  services:
-    - mysql:8.0
-  #
-  # This folder is cached between builds
-  # http://docs.gitlab.com/ee/ci/yaml/README.html#cache
-  cache:
-    paths:
-      - ~/.cache/pip/
-  before_script:
-    - apt -y update
-    - apt -y install apt-utils
-    - apt -y upgrade
-    - pip3 install -r requirements.txt
-
-
-migrations:
-  stage: build
-  script:
-    - python manage.py makemigrations
-    # - python3 manage.py makemigrations myapp
-    - python manage.py migrate
-    - python manage.py check
-
-
-django-tests:
+Test:
+  image: python:2.7
   stage: test
-  script:
-    # The MYSQL user only gets permissions for MYSQL_DB, so Django can't create a test database.
-    - echo "GRANT ALL on *.* to '${MYSQL_USER}';"| mysql -u root --password="${MYSQL_ROOT_PASSWORD}" -h mysql
-    # use python3 explicitly. see https://wiki.ubuntu.com/Python/3
+  before_script:
+    - pip install -r requirements.txt
+    - python manage.py migrate
+    - python manage.py collectstatic --no-input
     - python manage.py test
+
+staging:
+  stage: deploy
+  script:
+  - apt-get update -qy
+  - apt-get install -y ruby-dev
+  - gem install dpl
+  - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
+  only:
+  - master

@@ -10,7 +10,7 @@ from remote_eventplan.models import Plan
 def top(request):
     """トップ画面"""
     if request.method == 'POST':
-        plan = Plan(name=request.POST['name'], target=request.POST['target'], person=request.POST['person'], person=request.POST['category'], time=request.POST['time'], tools=request.POST['tools'], help=request.POST['help'], outline=request.POST['outline'], posted_at=timezone.now())
+        plan = Plan(name=request.POST['name'], target=request.POST['target'], person=request.POST['person'], category=request.POST['category'], time=request.POST['time'], tools=request.POST['tools'], help=request.POST['help'], outline=request.POST['outline'], posted_at=timezone.now())
         plan.save()
         return redirect(top)
     plans = Plan.objects.order_by('-posted_at')

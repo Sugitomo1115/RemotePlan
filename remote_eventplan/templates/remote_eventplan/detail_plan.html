@@ -16,6 +16,9 @@
             <div>
                 概要：{{plan.outline}}
             </div>
+            <div>
+                カテゴリー：{{plan.category}}
+            </div>
         </div>
         <a href="{% url 'like' plan.id %}">
             イイねの数：{{plan.like}}

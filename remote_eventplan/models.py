@@ -5,6 +5,7 @@ class Plan(models.Model):
     name = models.CharField(max_length=100)
     target = models.CharField(max_length=20)
     person = models.CharField(max_length=20)
+    category = models.CharField(max_length=30)
     time = models.CharField(max_length=100)
     tools = models.CharField(max_length=100)
     help = models.CharField(max_length=100)

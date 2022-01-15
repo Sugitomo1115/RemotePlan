@@ -3,15 +3,39 @@
 <html lang="ja">
     <head>
         <meta charset="utf-8">
-        <title>企画作成ページ</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/create.css' %}" />
+        <title>企画作成</title>
     </head>
     <body>
-      <a href="{% url 'top' %}">Top</a>
-      <h1>企画作成画面</h1>
-      <form action = "{% url 'top' %}" method="post">
+        <div class="banner">
+            <a href="{% url 'top' %}" class="title">リモプロ</a>
+            </div>
+            {% if request.user.is_authenticated %}
+            <div class="authbox">
+            <a href="{% url 'logout' %}" class="authmenu">ログアウト</a>
+            </div>
+            <div class="authbox">
+            <p id="username">{{request.user.username}}</p>
+            </div>
+            {% else %}
+            <div class="authbox">
+            <a href="{% url 'signup' %}" class="authmenu">新規登録</a>
+            </div>
+            <div class="authbox">
+            <a href="{% url 'login' %}" class="authmenu">ログイン</a>
+            </div>
+            {% endif %} 
+            <div class="toplink">
+                <a href="{% url 'top' %}" class="topbtn">トップ</a>
+            </div>
+            <div class="toplink">
+                <a href="{{request.META.HTTP_REFERER}}" class="topbtn">戻る</a>
+            </div>
+      <h1 class="pagename">企画作成</h1>
+      <form action = "{% url 'top' %}" method="post" class="create-box">
           {% csrf_token %}
           <p>企画名</p>
-          <input type="text" name="name">
+          <textarea name="name"></textarea>
           <p>対象</p>
           <select name="target">
               <option value="誰でも">誰でも</option>
@@ -19,27 +43,44 @@
               <option value="社会人">社会人</option>
           </select>
           <p>人数</p>
-          <input type="text" name="person">
-          <p>カテゴリー</p>
-          <select name="category">
+          <textarea name="person"></textarea>
+          <p>カテゴリー１</p>
+          <select name="category1">
             <option value="運動" >運動</option>
-            <option value="ディスカッション" >ディスカッション</option>
-            <option value="心理テスト" >心理テスト</option>
-            <option value="頭脳ゲーム" >頭脳ゲーム</option>
-            <option value="テーブルゲーム" >テーブルゲーム</option>
-            <option value="イラスト" >イラスト</option>
+            <option value="勉強(小学生向け)" >勉強(小学生向け)</option>
+            <option value="勉強(中学生向け)" >勉強(中学生向け)</option>
+            <option value="勉強(高校生向け)" >勉強(高校生向け)</option>
+            <option value="勉強(大学生向け)" >勉強(大学生向け)</option>
+            <option value="学生相談" >学生相談</option>
+            <option value="生活相談" >生活相談</option>
+            <option value="その他" >その他</option>
+          </select>
+          <p>カテゴリー２</p>
+          <select name="category2">
+            <option value="なし">なし</option>
+            <option value="運動" >運動</option>
+            <option value="勉強(小学生向け)" >勉強(小学生向け)</option>
+            <option value="勉強(中学生向け)" >勉強(中学生向け)</option>
+            <option value="勉強(高校生向け)" >勉強(高校生向け)</option>
+            <option value="勉強(大学生向け)" >勉強(大学生向け)</option>
+            <option value="学生相談" >学生相談</option>
             <option value="生活相談" >生活相談</option>
             <option value="その他" >その他</option>
           </select>
           <p>所要時間</p>
-          <input type="text" name="time">
+          <textarea name="time"></textarea>
           <p>使用ツール</p>
-          <input type="text" name="tools">
+          <textarea name="tools"></textarea>
           <p>ヘルプ</p>
-          <input type="text" name="help">
+          <textarea name="help"></textarea>
           <p>詳細</p>
-          <input type="text" name="outline">
+          <textarea name="outline" class="create-outline"></textarea>
+          <div>
           <button type="submit">作成</button>
+          </div>
       </form>
+      <footer class="footer">
+        <a href="{% url 'privacy' %}" class="footlink">利用規約</a>
+      </footer>
     </body>
 </html>

@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}" />
+        <title>ログイン画面</title>
+    </head>
+    <body>
+        <div class="banner">
+            <a href="{% url 'top' %}" class="title">リモプロ</a>
+        </div>
+        <div class="toplink">
+            <a href="{% url 'top' %}" class="topbtn">トップ</a>
+        </div>
+        <div class="toplink">
+            <a href="{{request.META.HTTP_REFERER}}" class="topbtn">戻る</a>
+        </div>
+        <div class="loginform">
+            <h2>ログイン</h2>
+            <form method="post">
+                {% csrf_token %}
+                ユーザー名：
+                {{form.username}}
+                パスワード：
+                {{form.password}}
+                <input type="submit" value="ログイン">
+            </form>
+        </div>
+    </body>
+</html>

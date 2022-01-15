@@ -4,28 +4,66 @@
     <head>
         <meta charset="utf-8">
         <title>企画詳細ページ</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/detail.css' %}" />
+        <script type="text/javascript" src="{% static 'js/remote_plan.js' %}"></script>
     </head>
     <body>
-        <h1>企画詳細画面</h1>
-        <a href="{% url 'top' %}">Top</a>
-        <div>
-            <h3>企画名：{{ plan.name }}</h3>
+        <header class="banner">
+            <a href="{% url 'top' %}" class="title">リモプロ</a>
+        </header>
+        {% if messages %}
+        {% for message in messages %}
+            <li class="messages">{{ message.tags }}:{{ message }}</li>
+            {% endfor %}
+        {% endif %}
+        {% if request.user.is_authenticated %}
+        <div class="authbox">
+            <a href="{% url 'logout' %}" class="authmenu">ログアウト</a>
+        </div>
+        <div class="authbox">
+            <p id="username">{{request.user.username}}</p>
+        </div>
+        {% else %}
+        <div class="authbox">
+            <a href="{% url 'signup' %}" class="authmenu">新規登録</a>
+        </div>
+        <div class="authbox">
+            <a href="{% url 'login' %}" class="authmenu">ログイン</a>
+        </div>
+        {% endif %}
+        <div class="toplink">
+            <a href="{% url 'top' %}" class="topbtn">トップ</a>
+        </div>
+        <div class="toplink">
+            <a href="{{request.META.HTTP_REFERER}}" class="topbtn">戻る</a>
+        </div>
+        <div class="plan-box">
+            <p class="plan-name">企画名：{{ plan.name }}</p>
             <small>[{{plan.posted_at}}]</small>
-            <p>対象：{{plan.target}}</p>
-            <p>人数：{{plan.person}}</p>
-            <div>
-                概要：{{plan.outline}}
-            </div>
-            <div>
-                カテゴリー：{{plan.category}}
+            <p class="detail-label">対象：{{ plan.target }}</p>
+            <p class="detail-label">人数：{{ plan.person }}</p>
+            <p class="detail-label">カテゴリー：{{ plan.category }}</p>
+            <p class="detail-label">所要時間：{{ plan.time }}</p>
+            <p class="detail-label">使用ツール：{{ plan.tools }}</p>
+            <p class="detail-label">ヘルプ：{{ plan.help }}</p>
+            <div class="detail-label">
+                詳細：{{plan.outline}}
             </div>
         </div>
-        <a href="{% url 'like' plan.id %}">
-            イイねの数：{{plan.like}}
-        </a>
+        <div class="like">
+            イイね：<span id="like{{plan.id}}">{{plan.like_num}}</span>
+            {% if request.user.is_authenticated %}
+              <a onclick="like({{plan.id}});" class="like-btn">
+                <img class="like-image" src="{% static 'img/star.png' %}">
+              </a>
+            {% endif %}
+        </div>
         <br>
-        <a href="{% url 'delete' plan.id %}">
-            Delete
+        <a href="{% url 'delete' plan.id %}" class="delete-btn">
+            削除
         </a>
+        <footer class="footer">
+            <a href="{% url 'privacy' %}" class="footlink">利用規約</a>
+        </footer>
     </body>
 </html>

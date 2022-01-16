@@ -1,0 +1,154 @@
+body{
+    margin: 0px;
+}
+
+.banner{
+    background-color: black;
+    margin: 0px;
+    width: 100%;
+    opacity: 0.87;
+    display: flex;
+}
+
+.title{
+    color: aliceblue;
+    text-decoration: none;
+    margin: 20px 20px 20px 40px;
+    font-size: 30px;
+    font-family: serif;
+}
+
+.title:hover{
+    color: antiquewhite;
+    margin: 20px 20px 20px 40px;
+    font-size: 30px;
+    font-family: serif;
+}
+
+.authbox{
+    margin: 15px;
+    margin-right: 20px;
+    margin-top: 25px;
+    text-align: center;
+    float: right;
+}
+
+#username{
+    margin: 0px;
+}
+
+.authmenu{
+    padding: 10px;
+    color: rgb(27, 27, 27);
+    text-decoration: none;
+    border: solid 1px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 4px gray;
+}
+
+.authmenu:hover{
+    padding: 10px;
+    color: rgb(27, 27, 27);
+    background-color: rgb(239, 239, 240);
+    text-decoration: none;
+    border: solid 1px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 0px;
+}
+
+.searchbox{
+    margin: 30px;
+}
+
+.searchbox input{
+    width: 250px;
+    margin-left: 10px;
+}
+
+#create-btn{
+    color: rgb(29, 29, 29);
+    padding: 15px;
+    margin: 30px;
+    background-color: rgb(165, 247, 165);
+    box-shadow: 2px 2px 4px gray;
+    text-decoration: none;
+    border-radius: 30px;
+    border: solid 1px;
+}
+
+#create-btn:hover{
+    padding: 15px;
+    margin: 30px;
+    background-color: lightgreen;
+    box-shadow: 0px 0px 0px;
+    border-radius: 30px;
+    border: solid 1px;
+}
+ 
+ .sidemenu {
+   margin-left: 10px;
+   padding: 10px;
+   width:35%;
+   border-right: solid 1px;
+ } 
+ 
+ .mainmenu {
+   width:65%;
+   margin-left:10px;
+ }
+ 
+ article {
+   margin-top: 30px;
+   margin-bottom: 60px;
+   display:flex;
+ }
+
+.planbox{
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 40px;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 2px 2px 4px gray;
+    border: solid 1px;
+}
+
+.plan-name{
+    margin: 10px;
+
+    font-size: 20px;
+}
+
+.plan-detail{
+    margin: 10px 20px 10px 10px;
+}
+
+.like{
+    font-size: 14px;
+    margin: 0px 10px 0px 10px;
+}
+
+.like-image{
+    width: 20px;
+    height: 20px;
+    float: right;
+}
+
+.emptymessage{
+    margin: 30px;
+}
+
+.footer{
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    color: white;
+    background-color: black;
+    margin: 0px;
+    width: 100%;
+    opacity: 0.87;
+}
+
+.footlink{
+    color: aliceblue;
+}

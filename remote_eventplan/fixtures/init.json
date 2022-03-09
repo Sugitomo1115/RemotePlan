@@ -1,0 +1,10 @@
+[
+    {"model": "remote_eventplan.category", "pk": 1, "fields": {"category_name": "運動"}},
+    {"model": "remote_eventplan.category", "pk": 2, "fields": {"category_name": "コミュニケーション"}},
+    {"model": "remote_eventplan.category", "pk": 3, "fields": {"category_name": "勉強(小学生向け)"}},
+    {"model": "remote_eventplan.category", "pk": 4, "fields": {"category_name": "勉強(中学生向け)"}},
+    {"model": "remote_eventplan.category", "pk": 5, "fields": {"category_name": "勉強(高校生向け)"}},
+    {"model": "remote_eventplan.category", "pk": 6, "fields": {"category_name": "勉強(大学生向け)"}},
+    {"model": "remote_eventplan.category", "pk": 7, "fields": {"category_name": "学生相談"}},
+    {"model": "remote_eventplan.category", "pk": 8, "fields": {"category_name": "生活相談"}}
+]

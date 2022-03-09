@@ -1,3 +1,4 @@
+from multiprocessing import context
 import re
 from django.contrib import messages
 from django.http.response import HttpResponseRedirect
@@ -5,10 +6,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404,JsonResponse
 from django.utils import timezone
 from django.db.models import Q
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.signals import user_logged_out
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from .forms import UserCreateForm
-from remote_eventplan.models import UserManager, User, Plan, Like
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.contrib.auth.views import LoginView, LogoutView
+from .forms import UserCreateForm, LoginForm
+from remote_eventplan.models import UserManager, User, Plan, Like, Category
 
 # Create your views here.
 def top(request):
@@ -18,6 +25,7 @@ def top(request):
         plan.save()
         return redirect(top)
     plans = Plan.objects.order_by('-posted_at')
+    categories = Category.objects.all
     if 'query' in request.GET:
         q_word = request.GET.get('query')
         if q_word == "" or q_word.isspace():
@@ -26,7 +34,7 @@ def top(request):
             search = q_word.replace("　"," ")
             search_list = search.split(" ")
 
-            #(3)クエリを作る
+            #クエリを作る
             query = Q()
             for word in search_list:
 
@@ -34,10 +42,10 @@ def top(request):
                 if word == "":
                     continue
 
-                #TIPS:AND検索の場合は&を、OR検索の場合は|を使用する。
+                #OR検索
                 query &= Q(Q(name__icontains=word) | Q(outline__icontains=word))
 
-            #(4)作ったクエリを実行
+            #作ったクエリを実行
             plans = Plan.objects.filter(query)
         plans = plans.order_by('-posted_at')
     
@@ -57,14 +65,27 @@ def top(request):
         elif request.GET['sort']=='like_num':
             plans=plans.order_by('-like_num')
     context = {
-        'plans': plans
+        'plans': plans,
+        'categories':categories
     }
     return render(request, "remote_eventplan/top.html", context)
 
 @login_required
 def create(request):
     """企画制作画面"""
-    return render(request, "remote_eventplan/create_plan.html")
+    if request.method == 'POST':
+        category = Category(category_name=request.POST['category_name'])
+        category.save()
+        return redirect(create)
+    categories = Category.objects.all
+    context = {
+        'categories':categories
+    }
+    return render(request, "remote_eventplan/create_plan.html", context)
+
+@login_required
+def add_category(request):
+    return render(request, "remote_eventplan/add_category.html")
 
 def detail(request, plan_id):
     """企画詳細画面"""
@@ -92,24 +113,6 @@ def delete(request, plan_id):
             return render(request, "remote_eventplan/detail_plan.html", context)
     except Plan.DoesNotExist:
         raise Http404("Plan does not exist")
-
-@login_required
-def update(request, plan_id):
-    try:
-        plan = Plan.objects.get(pk=plan_id)
-    except Plan.DoesNotExist:
-        raise Http404("Plan does not exist")
-
-    if request.method == 'POST':
-        plan.name = request.POST['name']
-        plan.outline= request.POST['outline']
-        plan.save()
-        return redirect(detail, plan_id)
-
-    context = {
-        'plan': plan
-    }
-    return render(request, 'remote_eventplan/edit.html', context)
 
 def like(request, plan_id):
     try:
@@ -164,17 +167,86 @@ def regist_save(request):
         
 
 def signup(request):
+    """サインアップ画面"""
     form = UserCreateForm(request.POST or None)
     context = {
         'form': form,
     }
     return render(request, 'registration/signup.html', context)
 
-def login(request):
-    return render(request, "remote_eventplan/login.html")
-
 def privacy(request):
+    """利用規約画面"""
     return render(request, "remote_eventplan/privacy.html")
 
 def privacy_check(request):
+    """ユーザー登録前の利用規約確認画面"""
     return render(request, "remote_eventplan/privacy_check.html")
+
+def login(request):
+    """ログイン画面"""
+    return render(request, "remote_eventplan/login.html")
+
+#改造したLoginView
+class CustomLoginView(LoginView):
+    form_class = LoginForm
+
+    #GETをした際にユーザー名を記憶していれば初期値に設定
+    def get(self, request, *args, **kwargs):
+        if 'form_data' in self.request.session:
+            saved_username = request.session.get('form_data')
+            form = LoginForm(initial=dict(username = saved_username))
+            context = {
+                'form': form
+            }
+        else:
+            form = LoginForm()
+            context = {
+                'form': form
+            }
+        return render(self.request, self.template_name, context)
+
+    def form_valid(self, form):
+        """Security check complete. Log the user in."""
+        auth_login(self.request, form.get_user())
+        #ユーザー名の記憶するかのチェック
+        if(self.request.POST.get('saveflag')):
+            self.request.session['form_data'] = self.request.POST.get('username')
+            self.request.session['saveflag'] = True
+        else:
+            self.request.session['saveflag'] = False
+        return HttpResponseRedirect(self.get_success_url())
+
+#改造したLogoutView
+class CustomLogoutView(LogoutView):
+
+    def Custom_auth_logout(self, request):
+        """
+        Remove the authenticated user's ID from the request and flush their session
+        data.
+        """
+        # Dispatch the signal before the user is logged out so the receivers have a
+        # chance to find out *who* logged out.
+        user = getattr(request, "user", None)
+        if not getattr(user, "is_authenticated", True):
+            user = None
+        user_logged_out.send(sender=user.__class__, request=request, user=user)
+        #ログイン時にチェックを入れていた場合はユーザー名を記憶
+        if request.session.get('saveflag'):
+            username = request.session.get('form_data')
+            request.session.flush()
+            request.session['form_data'] = username
+        else:
+            request.session.flush()
+        if hasattr(request, "user"):
+            from django.contrib.auth.models import AnonymousUser
+
+            request.user = AnonymousUser()
+
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwargs):
+        self.Custom_auth_logout(request)
+        next_page = self.get_next_page()
+        if next_page:
+            # Redirect to this page until the session has been cleared.
+            return HttpResponseRedirect(next_page)
+        return super().dispatch(request, *args, **kwargs)

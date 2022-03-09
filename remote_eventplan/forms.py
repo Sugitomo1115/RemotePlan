@@ -1,3 +1,5 @@
+from dataclasses import fields
+from email.policy import default
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.forms import UserCreationForm
@@ -5,14 +7,25 @@ from .models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import get_user_model
 
 class LoginForm(AuthenticationForm):
     """ログインフォーム"""
+    #ユーザー名を記憶するかのチェック
+    saveflag = forms.BooleanField(required=False)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
-            field.widget.attrs['placeholder'] = field.label   
+            self.fields['saveflag'].widget.attrs["class"] = "form-check-input"
+            field.widget.attrs['placeholder'] = field.label
+
+    class Meta:
+        fields = (User.USERNAME_FIELD,)
+
+    def get_saveflag(self):
+        return self.saveflag 
 
 class UserCreateForm(UserCreationForm):
     """ユーザー登録フォーム"""

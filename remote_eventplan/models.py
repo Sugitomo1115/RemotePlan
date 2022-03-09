@@ -42,7 +42,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """ユーザー AbstractUserをコピペし編集"""
+    """ユーザー AbstractBaseUserを継承"""
 
     id = models.UUIDField(default=uuid_lib.uuid4,
                             primary_key=True, editable=False)
@@ -108,6 +108,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
 class Plan(models.Model):
+    """企画テンプレート"""
     name = models.CharField(max_length=100, default="名無し")
     target = models.CharField(max_length=20, default="誰でも")
     person = models.CharField(max_length=20, default="指定なし")
@@ -122,5 +123,6 @@ class Plan(models.Model):
     create_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Like(models.Model):
+    """イイねモデル"""
     post_user = models.ForeignKey(User, on_delete=models.CASCADE)
     post_plan = models.ForeignKey(Plan, on_delete=models.CASCADE)

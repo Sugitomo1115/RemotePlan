@@ -1,3 +1,5 @@
+from pyexpat import model
+from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
@@ -126,3 +128,7 @@ class Like(models.Model):
     """イイねモデル"""
     post_user = models.ForeignKey(User, on_delete=models.CASCADE)
     post_plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
+
+class Category(models.Model):
+    """カテゴリーモデル"""
+    category_name = models.CharField(max_length=30, default="なし", unique=True)

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm, AdminPasswordChangeForm
 from django.utils.translation import ugettext_lazy as _
-from .models import User, Plan, Like
+from .models import User, Plan, Like, Category
 
 
 class MyUserAdmin(UserAdmin):

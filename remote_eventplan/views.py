@@ -186,7 +186,7 @@ def login(request):
     """ログイン画面"""
     return render(request, "remote_eventplan/login.html")
 
-#改造したLoginView
+#改良したLoginView
 class CustomLoginView(LoginView):
     form_class = LoginForm
 
@@ -216,7 +216,7 @@ class CustomLoginView(LoginView):
             self.request.session['saveflag'] = False
         return HttpResponseRedirect(self.get_success_url())
 
-#改造したLogoutView
+#改良したLogoutView
 class CustomLogoutView(LogoutView):
 
     def Custom_auth_logout(self, request):

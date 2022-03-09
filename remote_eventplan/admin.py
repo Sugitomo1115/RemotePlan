@@ -31,4 +31,3 @@ class MyUserAdmin(UserAdmin):
 admin.site.register(User, MyUserAdmin)
 admin.site.register(Plan)
 admin.site.register(Like)
-admin.site.register(Category)

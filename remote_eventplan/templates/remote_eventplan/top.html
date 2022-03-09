@@ -4,36 +4,104 @@
     <head>
         <meta charset="utf-8">
         <title>トップページ</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'css/top.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/top_smart.css' %}" media="screen and (max-width:767px)">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/top.css' %}" media="screen and (min-width: 768px)">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
         <script type="text/javascript" src="{% static 'js/remote_plan.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/menu.js' %}"></script>
     </head>
     <body>
       <div class="banner">
         <a href="{% url 'top' %}" class="title">リモプロ</a>
+        <button type="button" class="menu-btn d-md-none">
+          <i class="fa fa-bars" aria-hidden="true"></i>
+        </button>
+        <div class="menu d-md-none">
+          {% if request.user.is_authenticated %}
+          <div class="menu__item">
+            <p id="username">{{request.user.username}}</p>
+          </div>
+          <div class="menu__item">
+            <a href="{% url 'logout' %}" class="menu__text">ログアウト</a>
+          </div>
+          {% else %}
+          <div class="menu__item">
+            <a href="{% url 'privacy_check' %}" class="menu__text">新規登録</a>
+          </div>
+          <div class="menu__item">
+            <a href="{% url 'login' %}" class="menu__text">ログイン</a>
+          </div>
+          {% endif %}
+          <div class="menu__item">
+            <a href="{% url 'top' %}" class="menu__text">トップ</a>
+          </div>
+          <div class="menu__item">
+            <a href="{% url 'privacy' %}" class="menu__text">利用規約</a>
+          </div>
+        </div>
       </div>
       {% if request.user.is_authenticated %}
-      <div class="authbox">
+      <div class="authbox d-none d-md-block">
         <a href="{% url 'logout' %}" class="authmenu">ログアウト</a>
       </div>
-      <div class="authbox">
+      <div class="authbox d-none d-md-block">
         <p id="username">{{request.user.username}}</p>
       </div>
       {% else %}
-      <div class="authbox">
+      <div class="authbox d-none d-md-block">
         <a href="{% url 'privacy_check' %}" class="authmenu">新規登録</a>
       </div>
-      <div class="authbox">
+      <div class="authbox d-none d-md-block">
         <a href="{% url 'login' %}" class="authmenu">ログイン</a>
       </div>
       {% endif %}
+
       <form action="{% url 'top' %}" method="get" class="searchbox">
         <input name="query" value="{{ request.GET.query }}" type="text">
         <button type="submit">検索</button>
       </form>
       <a href="{% url 'create' %}" id="create-btn">新規作成</a>
-        <br>
+      <br>
+
+      <details class="d-md-none">
+        <summary>絞り込み検索</summary>
+        <form action="{% url 'top' %}" method="get" class="searchmenu">
+          対象：
+          <div>
+            <input name="select" type="radio" value="" checked>なし
+            <input name="select" type="radio" value="誰でも">誰でも
+            <input name="select" type="radio" value="学生">学生
+            <input name="select" type="radio" value="社会人">社会人
+          </div>
+          <br>
+          カテゴリー：
+          <div>
+            <select name="searchcategory">
+              <option value="" >なし</option>
+              {% if categories %}
+              {% for category in categories %}
+              <option value={{ category.category_name }}>{{ category.category_name }}</option>
+              {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+          <button type="submit">絞り込む</button>
+        </form>
+      </details>
+
+      <details class="d-md-none">
+        <summary>ソート</summary>
+        <div class="sortbtn">
+          <a href="{% url 'top' %}?sort=date">投稿日順</a> |
+          <a href="{{request.path}}?sort=like_num">イイね順</a>
+        </div>
+      </details>
+      <hr class="d-md-none">
+
       <article>
-        <div class="sidemenu">
+        <div class="sidemenu d-none d-md-block">
           <br>
           <h4>【ソート】</h4>
           <div class="sortbtn">
@@ -55,20 +123,17 @@
             <div>
               <select name="searchcategory">
                 <option value="" >なし</option>
-                <option value="運動" >運動</option>
-                <option value="コミュニケーション" >コミュニケーション</option>
-                <option value="勉強(小学生向け)" >勉強(小学生向け)</option>
-                <option value="勉強(中学生向け)" >勉強(中学生向け)</option>
-                <option value="勉強(高校生向け)" >勉強(高校生向け)</option>
-                <option value="勉強(大学生向け)" >勉強(大学生向け)</option>
-                <option value="学生相談" >学生相談</option>
-                <option value="生活相談" >生活相談</option>
-                <option value="その他" >その他</option>
+                {% if categories %}
+                {% for category in categories %}
+                <option value={{ category.category_name }}>{{ category.category_name }}</option>
+                {% endfor %}
+                {% endif %}
               </select>
             </div>
             <button type="submit">絞り込む</button>
           </form>
         </div>
+
         <div class="mainmenu">
           {% if plans %}
           {% for plan in plans %}
@@ -100,8 +165,15 @@
           {% endif %}
         </div>
       </article>
-      <footer class="footer">
+
+      <div id="pageTop" class="d-md-none">
+        <a href="#" id="pageToplink">ページ上部へ</a>
+      </div>
+
+      <footer class="footer d-none d-md-block">
         <a href="{% url 'privacy' %}" class="footlink">利用規約</a>
       </footer>
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>
 </html>

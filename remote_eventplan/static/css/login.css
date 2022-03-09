@@ -56,3 +56,7 @@ body{
 .loginform{
     margin: 20px;
 }
+
+form{
+    width: 50%;
+}

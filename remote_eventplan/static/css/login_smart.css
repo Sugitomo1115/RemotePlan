@@ -1,0 +1,124 @@
+body{
+    margin: 0px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.banner{
+    background-color: black;
+    margin: 0px;
+    width: 100%;
+    opacity: 0.87;
+    display: flex;
+    position: fixed;
+    top: 0;
+}
+
+.title{
+    color: aliceblue;
+    text-decoration: none;
+    margin: 5px 20px 5px 40px;
+    font-size: 20px;
+    font-family: serif;
+}
+
+.title:hover{
+    color: antiquewhite;
+    margin: 5px 20px 5px 40px;
+    font-size: 20px;
+    font-family: serif;
+}
+
+.topbtn{
+    width: 50px;
+    padding: 10px;
+    margin: 20px 40px;
+    color: rgb(27, 27, 27);
+    text-decoration: none;
+    border: solid 1px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 4px gray;
+}
+
+.topbtn:hover{
+    width: 50px;
+    padding: 10px;
+    margin: 20px 40px;
+    color: rgb(27, 27, 27);
+    background-color: rgb(239, 239, 240);
+    text-decoration: none;
+    border: solid 1px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 0px;
+}
+
+.toplink{
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.loginform{
+    margin: 20px;
+}
+
+form{
+    width: 50%;
+}
+
+.menu-btn{
+    z-index: 9999;
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: black;
+    color: #fff;
+  }
+  
+  /*----------------------------
+  * メニュー本体
+  *----------------------------*/
+  .menu{
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #555;
+  }
+  .menu__item{
+    width: 100%;
+    height: auto;
+    padding: .5em 1em;
+    text-align: center;
+    color: #fff;
+    box-sizing: border-box;
+  }
+
+  .menu__text{
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  /*----------------------------
+  * アニメーション部分
+  *----------------------------*/
+  
+  /* アニメーション前のメニューの状態 */
+  .menu{
+    transform: translateX(100vw);
+    transition: all .3s linear;
+  }
+  /* アニメーション後のメニューの状態 */
+  .menu.is-active{
+    transform: translateX(0);
+  }
